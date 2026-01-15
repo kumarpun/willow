@@ -14,4 +14,4 @@ jobs:
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
       - name: Run API tests
         run: |
-          postman collection run "8eec575b-8b6a-4fb0-84d7-1d2fa4e1c091" -e "2b586343-a7cd-4483-92a0-9b418107f352" --integration-id "186239-${{ github.run_id }}" 
+          postman collection run "8eec575b-8b6a-4fb0-84d7-1d2fa4e1c091" -e "2b586343-a7cd-4483-92a0-9b418107f352" --integration-id "186239-${{ github.run_id }}"
