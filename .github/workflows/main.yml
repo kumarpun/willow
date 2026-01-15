@@ -1,0 +1,56 @@
+# name: Automated API tests using Postman CLI
+
+# on:
+#   push:
+#   schedule:
+#     # Runs at 8:00 AM IST Time (2:30 AM UTC)
+#     - cron: '30 2 * * *'
+#     # Runs at 4:00 PM IST Time (10:30 PM UTC)
+#     - cron: '30 10 * * *'
+#   workflow_dispatch:
+
+# jobs:
+#   automated-api-tests:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+      
+#       - name: Install Postman CLI
+#         run: |
+#           curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+      
+#       - name: Login to Postman CLI
+#         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+
+#       # Run Claude Collection
+#       - name: Run Claude API tests
+#         run: |
+#           postman collection run "13997388-b5979201-8405-4783-b5b8-cbd5e5052d9d" \
+#             -e "13997388-48705a4e-fb5b-408d-92bb-83473cb12fb0" \
+#             --integration-id "177714-${{ github.run_id }}-${{ github.run_attempt }}"
+
+#       # Add more collections below:
+#       # - name: Run Another Collection
+#       #   run: |
+#       #     postman collection run "YOUR-COLLECTION-UID" \
+#       #       -e "13997388-48705a4e-fb5b-408d-92bb-83473cb12fb0" \
+#       #       --integration-id "177714-${{ github.run_id }}-${{ github.run_attempt }}"
+
+#   notify-on-failure:
+#     runs-on: ubuntu-latest
+#     if: failure()
+#     needs: [automated-api-tests]
+#     steps:
+#       - name: Send failure notification to Cliq
+#         env:
+#           cliq_token: ${{ secrets.ZOHO_CLIQ_TOKEN }}
+#           channel_name: 'testing'
+#           job_title: "❌ Build Failed for '${{ github.event.repository.name }}'"
+#           job_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+#           branch_name: ${{ github.ref_name }}
+#           commit_sha: ${{ github.sha }}
+#           author: ${{ github.actor }}
+#           workflow: ${{ github.workflow }}
+#         run: |
+#           curl -X POST -H "Content-type: application/json" https://cliq.enthu.com/api/v2/channelsbyname/${channel_name}/message?zapikey=${cliq_token} \
+#           -d '{"bot":{"name":"GitHub Actions","image":"https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"},"card":{"theme":"modern-inline","title":"🚨 Build Failed","icon":"https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"},"text":"**'"${job_title}"'**\n\n📋 **Workflow:** '"${workflow}"'\n🌿 **Branch:** '"${branch_name}"'\n📝 **Commit:** '"${commit_sha}"'\n👤 **Author:** '"${author}"'\n\n🔗 [View Failed Run]('"${job_url}"')\n\n⚠️ Please investigate and fix the failing tests!"}'
