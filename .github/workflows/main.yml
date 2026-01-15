@@ -1,6 +1,13 @@
 name: Automated API tests using Postman CLI
 
-on: push
+on:
+  push:
+  schedule:
+    # Runs at 8:00 AM IST Time (2:30 AM UTC)
+    - cron: '30 2 * * *'
+    # Runs at 4:00 PM IST Time (10:30 PM UTC)
+    - cron: '30 10 * * *'
+  workflow_dispatch:  
 
 jobs:
   automated-api-tests:
